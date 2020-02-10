@@ -52,14 +52,13 @@ ARG GID=1000
 
 RUN \
 # add mode and permissions for files we added above
-  chmod 0755 /usr/local/sbin/tini && \
-  chown root:root /usr/local/sbin/tini && \
+  chmod 777 /usr/local/sbin/tini && \
 # add our user and group first to make sure their IDs get assigned consistently,
 # regardless of whatever dependencies get added
 # add user to root group for gocd to work on openshift
   useradd -u ${UID} -g root -d /home/go -m go && \
   apt-get update && \
-  apt-get install -y git subversion mercurial openssh-client bash unzip curl locales procps sysvinit-utils coreutils && \
+  apt-get install -y git subversion mercurial openssh-client bash unzip curl locales procps sysvinit-utils coreutils gnupg2 lsb-core software-properties-common && \
   apt-get autoclean && \
   echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen && /usr/sbin/locale-gen && \
   curl --fail --location --silent --show-error 'https://github.com/AdoptOpenJDK/openjdk13-binaries/releases/download/jdk-13.0.1%2B9/OpenJDK13U-jre_x64_linux_hotspot_13.0.1_9.tar.gz' --output /tmp/jre.tar.gz && \
@@ -68,17 +67,30 @@ RUN \
   rm -rf /tmp/jre.tar.gz && \
   mkdir -p /go-agent /docker-entrypoint.d /go /godata
 
+#Install Docker
+RUN  curl -fsSL https://download.docker.com/linux/ubuntu/gpg |  apt-key add -
+
+RUN  add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+ 
+RUN apt-get update
+
+RUN apt-get install -y docker-ce docker-ce-cli containerd.io
+
+
 ADD docker-entrypoint.sh /
 
 
 COPY --from=gocd-agent-unzip /go-agent /go-agent
 # ensure that logs are printed to console output
-COPY --chown=go:root agent-bootstrapper-logback-include.xml agent-launcher-logback-include.xml agent-logback-include.xml /go-agent/config/
+COPY  agent-bootstrapper-logback-include.xml agent-launcher-logback-include.xml agent-logback-include.xml /go-agent/config/
 
-RUN chown -R go:root /docker-entrypoint.d /go /godata /docker-entrypoint.sh \
-    && chmod -R g=u /docker-entrypoint.d /go /godata /docker-entrypoint.sh
+RUN chmod +x docker-entrypoint.sh
+
 
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-USER go
+
