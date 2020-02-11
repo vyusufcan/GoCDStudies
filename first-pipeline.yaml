@@ -1,0 +1,38 @@
+format_version: 3
+pipelines:
+  go-agent-elastic-agent-docker-build-push:
+    group: Common
+    label_template: 1.0.${COUNT}
+    lock_behavior: none
+    display_order: -1
+    materials:
+      project_repo:
+        git: https://github.com/vcan92/GoCDStudies.git
+        shallow_clone: false
+        auto_update: true
+        branch: master
+    stages:
+    - dockerbuild:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: true
+        approval:
+          type: success
+          allow_only_on_success: true
+        jobs:
+          dockerBuild:
+            timeout: 0
+            resources : ubuntu
+            tasks:
+            - exec:
+                arguments:
+                - -c
+                -  chmod +x ./first-pipeline.sh
+                command: /bin/bash
+                run_if: passed
+            - exec:
+                arguments:
+                - -c
+                - ./first-pipeline.sh
+                command: /bin/bash
+                run_if: passed
