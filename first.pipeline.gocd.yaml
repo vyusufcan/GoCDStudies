@@ -1,7 +1,7 @@
 format_version: 3
 pipelines:
   first-pipeline:
-    group: test
+    group: pwa
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
@@ -19,7 +19,7 @@ pipelines:
         jobs:
           Ansible-Playbook:
             timeout: 0
-            resources: ubuntu
+            resources: pwa-static
             tasks:
             - exec:
                 arguments:
