@@ -9,7 +9,7 @@ pipelines:
       go-agent-git:
         git: https://github.com/vcan92/GoCDStudies.git
     stages:
-    - Ansible-Playbook:
+    - runScript:
         fetch_materials: true
         keep_artifacts: false
         clean_workspace: false
@@ -17,9 +17,8 @@ pipelines:
           type: success
           allow_only_on_succes: true
         jobs:
-          Ansible-Playbook:
+          runScript:
             timeout: 0
-            resources: pwa-static
             tasks:
             - exec:
                 arguments:
