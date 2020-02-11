@@ -1,33 +1,30 @@
 format_version: 3
 pipelines:
   first-pipeline:
-    group: Common
-    label_template: 1.0.${COUNT}
+    group: test
+    label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
     materials:
-      project_repo:
+      go-agent-git:
         git: https://github.com/vcan92/GoCDStudies.git
-        shallow_clone: false
-        auto_update: true
-        branch: master
     stages:
-    - runScript:
+    - Ansible-Playbook:
         fetch_materials: true
         keep_artifacts: false
-        clean_workspace: true
+        clean_workspace: false
         approval:
           type: success
-          allow_only_on_success: true
+          allow_only_on_succes: true
         jobs:
-          runScript:
+          Ansible-Playbook:
             timeout: 0
-            resources : ubuntu
+            resources: ubuntu
             tasks:
             - exec:
                 arguments:
                 - -c
-                -  chmod +x ./first-pipeline.sh
+                - chmod +x ./first-pipeline.sh
                 command: /bin/bash
                 run_if: passed
             - exec:
