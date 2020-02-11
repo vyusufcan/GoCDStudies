@@ -1,6 +1,6 @@
 format_version: 3
 pipelines:
-  go-agent-elastic-agent-docker-build-push:
+  first-pipeline:
     group: Common
     label_template: 1.0.${COUNT}
     lock_behavior: none
@@ -12,7 +12,7 @@ pipelines:
         auto_update: true
         branch: master
     stages:
-    - dockerbuild:
+    - runScript:
         fetch_materials: true
         keep_artifacts: false
         clean_workspace: true
@@ -20,7 +20,7 @@ pipelines:
           type: success
           allow_only_on_success: true
         jobs:
-          dockerBuild:
+          runScript:
             timeout: 0
             resources : ubuntu
             tasks:
