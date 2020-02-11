@@ -1,7 +1,7 @@
 format_version: 3
 pipelines:
   first-pipeline:
-    group: pwa
+    group: test
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
@@ -19,7 +19,7 @@ pipelines:
         jobs:
           runScript:
             resources:
-             - pwa-static
+             - ubuntu
             timeout: 0
             tasks:
             - exec:
