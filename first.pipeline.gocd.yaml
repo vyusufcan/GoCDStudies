@@ -18,6 +18,8 @@ pipelines:
           allow_only_on_succes: true
         jobs:
           runScript:
+            resources:
+             - pwa-static
             timeout: 0
             tasks:
             - exec:
